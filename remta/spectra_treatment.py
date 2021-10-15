@@ -30,3 +30,35 @@ class SpectraTreatment:
 
             return fig.show()
 
+
+    @staticmethod
+    def finding_minima(df: pd.DataFrame, n=1):
+
+        if n == 1:
+            minima_df = df.drop(['x', 'y'], axis=1).min().reset_index()
+            minima_df.columns = ['spectro', 'valor_minimo']
+            return minima_df
+
+        else:
+            min_labels = ['min'+str(min) for min in range(1, n+1)]
+            minima_df = pd.DataFrame()
+
+            for col in df.drop(['x', 'y'], axis=1).columns:
+                df_col = (
+                    df[col]
+                    .nsmallest(n)
+                    .to_frame()
+                    .rename(columns={col: 'value'})
+                    .assign(spectro = col)
+                    .assign(min_label = min_labels)
+                )
+
+                minima_df = pd.concat([minima_df, df_col])
+            
+            minima_df = (
+                pd.pivot_table(data=minima_df, index='spectro', columns='min_label', values='value')
+                .reset_index()
+                .rename_axis(None, axis=1)
+            )
+
+            return minima_df

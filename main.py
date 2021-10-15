@@ -10,3 +10,5 @@ SpectraTreatment.plot_spectra(df)
 # PCA Calculation
 SpectraTreatment.plot_spectra(df, pca=True)
 
+# Finding Global Minima
+minima_df = SpectraTreatment.finding_minima(df)
